@@ -1,0 +1,10 @@
+{
+  "description": "A premium energy services platform for clients, suppliers, and KES teams to manage enquiries, projects, procurement, documents, and operations.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

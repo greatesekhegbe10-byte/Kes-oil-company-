@@ -1,0 +1,199 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // REUSABLE HELPER FUNCTIONS
+    // ==========================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Role verification using custom claims (authoritative) or user doc lookup
+    function getRole() {
+      return request.auth.token.role != null 
+        ? request.auth.token.role 
+        : get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && (request.auth.token.admin == true || getRole() == 'SUPER_ADMIN');
+    }
+
+    function isManagement() {
+      return isAuthenticated() && (isSuperAdmin() || getRole() == 'MANAGEMENT');
+    }
+
+    function isStaff() {
+      return isAuthenticated() && (
+        isManagement() || 
+        getRole() == 'BUSINESS_DEVELOPMENT' || 
+        getRole() == 'PROJECT_MANAGER' || 
+        getRole() == 'PROCUREMENT_OFFICER'
+      );
+    }
+
+    function isProcurement() {
+      return isAuthenticated() && (isManagement() || getRole() == 'PROCUREMENT_OFFICER');
+    }
+
+    function isProjectManager() {
+      return isAuthenticated() && (isManagement() || getRole() == 'PROJECT_MANAGER');
+    }
+
+    function isBusinessDev() {
+      return isAuthenticated() && (isManagement() || getRole() == 'BUSINESS_DEVELOPMENT');
+    }
+
+    // Default deny all access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ==========================================
+    // USERS COLLECTION
+    // ==========================================
+    match /users/{userId} {
+      // Users can read their own profile; staff can view user directories
+      allow read: if isOwner(userId) || isStaff();
+
+      // Users can only create their own user document on registration
+      // Cannot grant themselves administrative privileges (SUPER_ADMIN or MANAGEMENT)
+      allow create: if isOwner(userId) && 
+        (!('role' in request.resource.data) || 
+         request.resource.data.role == 'CLIENT' || 
+         request.resource.data.role == 'SUPPLIER');
+
+      // Users can update non-privileged profile attributes, but cannot elevate their role
+      allow update: if isOwner(userId) && 
+        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'uid', 'accountStatus']))
+        || isSuperAdmin();
+
+      allow delete: if isSuperAdmin();
+    }
+
+    // ==========================================
+    // ENQUIRIES COLLECTION
+    // ==========================================
+    match /enquiries/{enquiryId} {
+      // Clients can only read their own submitted enquiries; staff can view all enquiries
+      allow read: if isStaff() || (isAuthenticated() && resource.data.clientId == request.auth.uid);
+
+      // Clients can create enquiries tied to their UID; staff can register RFQs
+      allow create: if isAuthenticated() && (
+        isStaff() || request.resource.data.clientId == request.auth.uid
+      );
+
+      // Commercial team & Management can update all enquiries; clients cannot modify once submitted
+      allow update: if isStaff();
+
+      allow delete: if isSuperAdmin();
+    }
+
+    // ==========================================
+    // QUOTATIONS COLLECTION
+    // ==========================================
+    match /quotations/{quotationId} {
+      allow read: if isStaff() || (isAuthenticated() && resource.data.clientId == request.auth.uid);
+      allow create, update: if isBusinessDev() || isManagement();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ==========================================
+    // PROJECTS & TASKS
+    // ==========================================
+    match /projects/{projectId} {
+      allow read: if isStaff() || isOwner(resource.data.clientUid);
+      allow create: if isManagement() || isProjectManager();
+      allow update: if isManagement() || 
+        (isProjectManager() && resource.data.projectManagerId == request.auth.uid);
+      allow delete: if isSuperAdmin();
+    }
+
+    match /tasks/{taskId} {
+      allow read: if isStaff();
+      allow create, update: if isProjectManager();
+      allow delete: if isManagement();
+    }
+
+    // ==========================================
+    // SUPPLIERS & PROCUREMENT
+    // ==========================================
+    match /suppliers/{supplierId} {
+      // Suppliers can view their own company profile; Procurement and Management can view all
+      allow read: if isProcurement() || (isAuthenticated() && resource.data.ownerUid == request.auth.uid);
+      allow create: if isAuthenticated();
+      // Only Procurement & Management can change verification status and compliance score
+      allow update: if isProcurement() || (
+        isAuthenticated() && 
+        resource.data.ownerUid == request.auth.uid && 
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['verificationStatus', 'complianceScore'])
+      );
+      allow delete: if isSuperAdmin();
+    }
+
+    match /purchaseOrders/{poId} {
+      allow read: if isProcurement() || (isAuthenticated() && resource.data.supplierId == request.auth.uid);
+      allow create: if isProcurement();
+      // Executive Capex approvals require Management or Super Admin
+      allow update: if isProcurement() || (
+        request.resource.data.diff(resource.data).affectedKeys().hasAny(['approvalStatus']) && isManagement()
+      );
+      allow delete: if isSuperAdmin();
+    }
+
+    match /procurementRequests/{requestId} {
+      allow read, create, update: if isProcurement() || isProjectManager();
+      allow delete: if isManagement();
+    }
+
+    // ==========================================
+    // DOCUMENTS REPOSITORY
+    // ==========================================
+    match /documents/{documentId} {
+      allow read: if isAuthenticated() && (
+        isStaff() || 
+        resource.data.ownerUid == request.auth.uid || 
+        resource.data.confidentiality == 'Public'
+      );
+      allow create: if isAuthenticated();
+      allow update: if isStaff() || isOwner(resource.data.ownerUid);
+      allow delete: if isManagement() || (isOwner(resource.data.ownerUid) && resource.data.confidentiality != 'Restricted');
+    }
+
+    // ==========================================
+    // NOTIFICATIONS
+    // ==========================================
+    match /notifications/{notificationId} {
+      allow read, update: if isAuthenticated() && resource.data.recipientUid == request.auth.uid;
+      allow create: if isAuthenticated();
+      allow delete: if isAuthenticated() && resource.data.recipientUid == request.auth.uid;
+    }
+
+    // ==========================================
+    // AUDIT LOGS (IMMUTABLE SECURITY RECORDS)
+    // ==========================================
+    match /auditLogs/{logId} {
+      // Only Management and Super Admin can audit system events
+      allow read: if isManagement();
+      // Authenticated users and services can append audit logs
+      allow create: if isAuthenticated();
+      // IMMUTABILITY: Never allow update or deletion of audit records
+      allow update, delete: if false;
+    }
+
+    // ==========================================
+    // SYSTEM SETTINGS
+    // ==========================================
+    match /systemSettings/{settingId} {
+      allow read: if isAuthenticated();
+      allow write: if isSuperAdmin();
+    }
+  }
+}
+

@@ -1,0 +1,78 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ==========================================
+    // REUSABLE HELPER FUNCTIONS
+    // ==========================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    function isApprovedDocType() {
+      return request.resource.contentType.matches('application/pdf') ||
+             request.resource.contentType.matches('application/vnd.openxmlformats-.*') ||
+             request.resource.contentType.matches('application/acad') ||
+             request.resource.contentType.matches('image/.*');
+    }
+
+    // Default deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    // Profile Images: max 5MB, images only
+    match /profile-images/{userId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) && isImage() && request.resource.size < 5 * 1024 * 1024;
+      allow delete: if isOwner(userId);
+    }
+
+    // Client Enquiry Drawings & PDFs: max 50MB
+    match /enquiry-documents/{userId}/{enquiryId}/{fileName} {
+      allow read: if isOwner(userId) || (isAuthenticated() && request.auth.token.role != 'CLIENT');
+      allow create: if isOwner(userId) && isApprovedDocType() && request.resource.size < 50 * 1024 * 1024;
+      allow delete: if isOwner(userId);
+    }
+
+    // Project Documents & Engineering Drawings: max 100MB
+    match /project-documents/{projectId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+        (request.auth.token.role in ['SUPER_ADMIN', 'MANAGEMENT', 'PROJECT_MANAGER']) &&
+        isApprovedDocType() && request.resource.size < 100 * 1024 * 1024;
+      allow delete: if isAuthenticated() && (request.auth.token.role in ['SUPER_ADMIN', 'MANAGEMENT']);
+    }
+
+    // Supplier Certificates & Audits: max 25MB
+    match /supplier-documents/{userId}/{fileName} {
+      allow read: if isOwner(userId) || (isAuthenticated() && request.auth.token.role in ['SUPER_ADMIN', 'MANAGEMENT', 'PROCUREMENT_OFFICER']);
+      allow write: if isOwner(userId) && isApprovedDocType() && request.resource.size < 25 * 1024 * 1024;
+      allow delete: if isOwner(userId);
+    }
+
+    // Procurement & PO Documents
+    match /procurement-documents/{requestId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+        (request.auth.token.role in ['SUPER_ADMIN', 'MANAGEMENT', 'PROCUREMENT_OFFICER']) &&
+        request.resource.size < 25 * 1024 * 1024;
+    }
+
+    // Executive Reports
+    match /reports/{projectId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (request.auth.token.role in ['SUPER_ADMIN', 'MANAGEMENT']);
+    }
+  }
+}
+
