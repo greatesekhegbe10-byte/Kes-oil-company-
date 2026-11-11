@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar } from './Navbar';
 import { Hero } from './Hero';
+import { DisciplinesSection } from './DisciplinesSection';
 import { AboutSection } from './AboutSection';
 import { ServicesSection } from './ServicesSection';
 import { FeaturedProjects } from './FeaturedProjects';
@@ -15,6 +16,7 @@ export const LandingPage: React.FC = () => {
     <div className="min-h-screen bg-[#071629] text-white">
       <Navbar />
       <Hero />
+      <DisciplinesSection />
       <AboutSection />
       <ServicesSection />
       <FeaturedProjects />

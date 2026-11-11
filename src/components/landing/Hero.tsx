@@ -27,48 +27,48 @@ interface HeroSlide {
 
 const HERO_SLIDES: HeroSlide[] = [
   {
-    id: 'offshore-fpso',
-    image: '/hero/hero1.jpg',
-    titlePart1: 'Engineering Excellence.',
-    titlePart2: 'Powering Energy Operations.',
-    subtitle: 'KES delivers high-integrity engineering, procurement, and construction management across Africa’s most demanding offshore and deepwater assets.',
-    fieldTag: 'DEEPWATER OPERATIONS • BONGA & EGINA BASIN',
-    telemetry: 'Offshore FPSO Production: 100% On-Stream',
+    id: 'offshore-platform',
+    image: '/hero/offshore-platform-helipad.jpg',
+    titlePart1: 'KES Energy Services.',
+    titlePart2: 'Building Infrastructure. Powering Progress.',
+    subtitle: 'KES Energy Services is an indigenous Nigerian firm delivering high-integrity oil & gas, offshore EPC, and integrated energy projects with discipline, safety, and follow-through.',
+    fieldTag: 'OFFSHORE PRODUCTION & DRILLING • DEEPWATER ASSETS',
+    telemetry: 'Offshore Helipad & Process Facility: 100% Operational',
     statLabel: 'Deepwater Projects',
     statValue: '18+',
   },
   {
-    id: 'refinery-complex',
-    image: '/hero/hero2.jpg',
-    titlePart1: 'Industrial Precision.',
-    titlePart2: 'Refining The Future.',
-    subtitle: 'Turnkey crude distillation upgrades, high-pressure steam utility looping, and petrochemical revamp services built to world-class API & ASME specifications.',
-    fieldTag: 'DOWNSTREAM REVAMP • NIGER DELTA REFINERIES',
-    telemetry: 'Thermal Efficiency: 94.8% SLA Target Met',
-    statLabel: 'Refining Assets',
-    statValue: '24+',
-  },
-  {
     id: 'pipeline-corridor',
-    image: '/hero/hero3.jpg',
-    titlePart1: 'Transmission Power.',
-    titlePart2: 'Unbroken Supply Chains.',
-    subtitle: 'Strategic cross-country natural gas trunklines, automated custody transfer metering, and cathodic integrity preservation for national energy security.',
+    image: '/hero/pipeline-excavator.jpg',
+    titlePart1: 'Heavy Pipeline Delivery.',
+    titlePart2: 'Corridor Construction.',
+    subtitle: 'Turnkey mainline swamp trenching, heavy civil earthworks, and pipeline crossing stations engineered to world-class API 1104 & ASME standards.',
     fieldTag: 'PIPELINE INFRASTRUCTURE • OB3 & ESCRAVOS CORRIDOR',
-    telemetry: 'Pipeline Telemetry: 142.6 Bar Custody Flow',
-    statLabel: 'Trunkline Loop',
+    telemetry: 'Heavy Excavation: 48-Inch Trunkline Loop Active',
+    statLabel: 'Corridor Built',
     statValue: '480 km',
   },
   {
-    id: 'cryo-compression',
-    image: '/hero/engineer.jpg',
-    titlePart1: 'Engineering & Technical Operations.',
-    titlePart2: 'Field Precision.',
-    subtitle: 'Expert field engineers in safety gear reviewing technical operations, cryogenic gas monetization, and compression retrofits supporting national industrialization.',
-    fieldTag: 'FIELD TECHNICAL OPERATIONS • PORT HARCOURT TERMINAL',
-    telemetry: 'Zero LTI Safety Protocol: 100% Compliant',
-    statLabel: 'Certified Engineers',
-    statValue: '120+',
+    id: 'consultancy-engineers',
+    image: '/hero/field-engineers-boat.jpg',
+    titlePart1: 'Technical Operations.',
+    titlePart2: 'Zero-Compromise HSE.',
+    subtitle: 'Specialized field engineers and technical consultants delivering swamp inspections, non-destructive testing, and marine transport with 2.4 million consecutive LTI-free hours.',
+    fieldTag: 'FIELD CONSULTING & MARINE SUPPORT • NIGER DELTA',
+    telemetry: 'HSE Audit: 2.4 Million Safe Man-Hours Certified',
+    statLabel: 'Zero LTI Hours',
+    statValue: '2.4M',
+  },
+  {
+    id: 'valve-inspection',
+    image: '/hero/valve-consultancy-engineers.jpg',
+    titlePart1: 'High-Pressure Procurement.',
+    titlePart2: 'API Valve Distribution.',
+    subtitle: 'Strategic sourcing, API 6D high-pressure valve distribution, containerized skid inspection, and factory acceptance testing under strict quality assurance.',
+    fieldTag: 'VALVE TESTING & METALLURGY • ONNE FREE ZONE YARD',
+    telemetry: 'Hydrostatic Pressure Test: 100% SIL 3 Verified',
+    statLabel: 'Verified Suppliers',
+    statValue: '125+',
   },
 ];
 
@@ -117,11 +117,11 @@ export const Hero: React.FC = () => {
               }`}
             />
 
-            {/* High-Clarity Vignette Gradient: keeps images vibrant and visible while giving text 100% crisp contrast */}
+            {/* High-Clarity Warm Atmospheric Vignette matching visual reference */}
             <div 
               className="absolute inset-0"
               style={{
-                background: 'linear-gradient(90deg, rgba(7,22,41,0.92) 0%, rgba(7,22,41,0.72) 45%, rgba(7,22,41,0.35) 75%, rgba(7,22,41,0.2) 100%), linear-gradient(0deg, rgba(7,22,41,0.9) 0%, transparent 40%)'
+                background: 'linear-gradient(90deg, rgba(7,22,41,0.92) 0%, rgba(7,22,41,0.65) 45%, rgba(7,22,41,0.28) 75%, rgba(7,22,41,0.15) 100%), linear-gradient(0deg, rgba(7,22,41,0.85) 0%, transparent 45%), radial-gradient(circle at 80% 40%, rgba(244,179,35,0.08) 0%, transparent 60%)'
               }}
             />
           </div>
@@ -153,42 +153,42 @@ export const Hero: React.FC = () => {
             </div>
           </div>
 
-          {/* Dynamic Headline with Drop Shadow for Maximum Legibility */}
-          <h1 className="text-3xl sm:text-5xl lg:text-[68px] font-black leading-[1.1] sm:leading-[1.05] tracking-tight text-white mb-4 sm:mb-6 drop-shadow-md">
+          {/* Dynamic Headline matching visual reference with warm gold brand punch */}
+          <h1 className="text-3xl sm:text-5xl lg:text-[72px] font-black leading-[1.08] tracking-tight text-white mb-4 sm:mb-6 drop-shadow-lg">
             {slide.titlePart1}{' '}
-            <span className="text-[#38BDF8] font-extrabold block sm:inline">
+            <span className="text-[#F4B323] font-black block sm:inline">
               {slide.titlePart2}
             </span>
           </h1>
 
           {/* Supporting Copy */}
-          <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-2xl font-normal mb-6 sm:mb-8 drop-shadow-sm">
+          <p className="text-sm sm:text-base lg:text-lg text-slate-200 leading-relaxed max-w-2xl font-normal mb-8 sm:mb-10 drop-shadow-md">
             {slide.subtitle}
           </p>
 
-          {/* Action CTAs - Responsive Stacking on Mobile */}
+          {/* Action CTAs matching visual reference with warm gold button & translucent secondary button */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
             <button
-              onClick={() => setSurface('management')}
-              className="h-12 sm:h-[52px] px-6 sm:px-8 bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 shadow-xl group cursor-pointer"
+              onClick={() => setSurface('services')}
+              className="h-12 sm:h-[54px] px-8 bg-[#F4B323] hover:bg-[#E0A21B] text-[#071629] font-black text-xs uppercase tracking-wider rounded-full flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 shadow-xl group cursor-pointer"
             >
-              <span>Explore Operations HQ</span>
+              <span>Explore Our Services</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
 
             <button
-              onClick={() => openModal('request-quotation')}
-              className="h-12 sm:h-[52px] px-6 sm:px-8 bg-[#0B1F38]/90 hover:bg-white hover:text-[#071629] text-white border border-white/30 font-bold text-xs uppercase tracking-wider rounded-xl transition-all backdrop-blur-md shadow-md cursor-pointer flex items-center justify-center"
+              onClick={() => setSurface('contact')}
+              className="h-12 sm:h-[54px] px-8 bg-black/40 hover:bg-white hover:text-[#071629] text-white border border-white/40 font-bold text-xs uppercase tracking-wider rounded-full transition-all backdrop-blur-md shadow-md cursor-pointer flex items-center justify-center"
             >
-              Request a Quotation
+              Contact Us
             </button>
 
             <button
-              onClick={() => setSurface('client')}
-              className="h-12 sm:h-[52px] px-4 sm:px-6 text-[#93C5FD] hover:text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              onClick={() => setSurface('management')}
+              className="h-12 sm:h-[54px] px-6 text-[#93C5FD] hover:text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
               <Compass className="w-4 h-4" />
-              <span>Client Portal</span>
+              <span>Operations HQ</span>
             </button>
           </div>
         </div>
