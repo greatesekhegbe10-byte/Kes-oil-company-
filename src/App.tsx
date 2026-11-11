@@ -6,6 +6,10 @@ import { ToastContainer } from './components/shared/ToastContainer';
 import { ModalContainer } from './components/modals/ModalContainer';
 import { AuthModal } from './components/auth/AuthModal';
 import { LandingPage } from './components/landing/LandingPage';
+import { AboutPage } from './components/landing/AboutPage';
+import { ServicesPage } from './components/landing/ServicesPage';
+import { PortfolioPage } from './components/landing/PortfolioPage';
+import { ContactPage } from './components/landing/ContactPage';
 import { ManagementDashboard } from './components/dashboard/ManagementDashboard';
 import { ClientPortal } from './components/client/ClientPortal';
 import { SupplierPortal } from './components/supplier/SupplierPortal';
@@ -21,6 +25,10 @@ const AppContent: React.FC = () => {
       {/* Main Surface Renderer */}
       <div className="flex-1">
         {surface === 'corporate' && <LandingPage />}
+        {surface === 'about' && <AboutPage />}
+        {surface === 'services' && <ServicesPage />}
+        {surface === 'portfolio' && <PortfolioPage />}
+        {surface === 'contact' && <ContactPage />}
         {surface === 'management' && <ManagementDashboard />}
         {surface === 'client' && <ClientPortal />}
         {surface === 'supplier' && <SupplierPortal />}

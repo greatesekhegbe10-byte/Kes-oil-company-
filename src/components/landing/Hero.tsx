@@ -28,7 +28,7 @@ interface HeroSlide {
 const HERO_SLIDES: HeroSlide[] = [
   {
     id: 'offshore-fpso',
-    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=2400&q=90',
+    image: '/hero/hero1.jpg',
     titlePart1: 'Engineering Excellence.',
     titlePart2: 'Powering Energy Operations.',
     subtitle: 'KES delivers high-integrity engineering, procurement, and construction management across Africa’s most demanding offshore and deepwater assets.',
@@ -39,7 +39,7 @@ const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 'refinery-complex',
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=2400&q=90',
+    image: '/hero/hero2.jpg',
     titlePart1: 'Industrial Precision.',
     titlePart2: 'Refining The Future.',
     subtitle: 'Turnkey crude distillation upgrades, high-pressure steam utility looping, and petrochemical revamp services built to world-class API & ASME specifications.',
@@ -50,7 +50,7 @@ const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 'pipeline-corridor',
-    image: 'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=2400&q=90',
+    image: '/hero/hero3.jpg',
     titlePart1: 'Transmission Power.',
     titlePart2: 'Unbroken Supply Chains.',
     subtitle: 'Strategic cross-country natural gas trunklines, automated custody transfer metering, and cathodic integrity preservation for national energy security.',
@@ -61,14 +61,14 @@ const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 'cryo-compression',
-    image: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=2400&q=90',
-    titlePart1: 'Sustainable Solutions.',
-    titlePart2: 'Zero-Routine Flaring.',
-    subtitle: 'Pioneering gas monetization, cryogenic natural gas liquid recovery, and compression retrofits supporting Nigeria’s Decades of Gas industrialization agenda.',
-    fieldTag: 'GAS MONETIZATION • PORT HARCOURT TERMINAL',
-    telemetry: 'Flare Elimination Index: 92.4% Captured',
-    statLabel: 'Gas Captured',
-    statValue: '1.2B SCF',
+    image: '/hero/engineer.avif',
+    titlePart1: 'Engineering & Technical Operations.',
+    titlePart2: 'Field Precision.',
+    subtitle: 'Expert field engineers in safety gear reviewing technical operations, cryogenic gas monetization, and compression retrofits supporting national industrialization.',
+    fieldTag: 'FIELD TECHNICAL OPERATIONS • PORT HARCOURT TERMINAL',
+    telemetry: 'Zero LTI Safety Protocol: 100% Compliant',
+    statLabel: 'Certified Engineers',
+    statValue: '120+',
   },
 ];
 

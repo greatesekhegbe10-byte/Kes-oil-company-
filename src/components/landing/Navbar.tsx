@@ -15,24 +15,30 @@ export const Navbar: React.FC = () => {
 
       {/* Desktop Navigation */}
       <nav className="hidden lg:flex items-center gap-9">
-        <a href="#about" className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors">
+        <button
+          onClick={() => setSurface('about')}
+          className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors cursor-pointer"
+        >
           About KES
-        </a>
-        <a href="#capabilities" className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors">
+        </button>
+        <button
+          onClick={() => setSurface('services')}
+          className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors cursor-pointer"
+        >
           Capabilities
-        </a>
-        <a href="#projects" className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors">
+        </button>
+        <button
+          onClick={() => setSurface('portfolio')}
+          className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors cursor-pointer"
+        >
           Portfolio
-        </a>
-        <a href="#precision" className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors">
-          HSE & Quality
-        </a>
-        <a href="#partners" className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors">
-          Partners
-        </a>
-        <a href="#contact" className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors">
+        </button>
+        <button
+          onClick={() => setSurface('contact')}
+          className="text-[13px] font-medium text-[#E1E7EF] hover:text-[#F4B323] transition-colors cursor-pointer"
+        >
           Contact
-        </a>
+        </button>
       </nav>
 
       {/* Action Buttons */}
@@ -92,41 +98,42 @@ export const Navbar: React.FC = () => {
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="lg:hidden absolute top-[84px] left-0 right-0 bg-[#071629] border-b border-[#1E3A5F] p-6 flex flex-col gap-4 shadow-2xl animate-in slide-in-from-top-4">
-          <a
-            href="#about"
-            onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-semibold text-[#E2E8F0] hover:text-[#F4B323] py-2 border-b border-[#152B47]"
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              setSurface('about');
+            }}
+            className="text-left text-sm font-semibold text-[#E2E8F0] hover:text-[#F4B323] py-2 border-b border-[#152B47]"
           >
             About KES
-          </a>
-          <a
-            href="#capabilities"
-            onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-semibold text-[#E2E8F0] hover:text-[#F4B323] py-2 border-b border-[#152B47]"
+          </button>
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              setSurface('services');
+            }}
+            className="text-left text-sm font-semibold text-[#E2E8F0] hover:text-[#F4B323] py-2 border-b border-[#152B47]"
           >
             Capabilities
-          </a>
-          <a
-            href="#projects"
-            onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-semibold text-[#E2E8F0] hover:text-[#F4B323] py-2 border-b border-[#152B47]"
+          </button>
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              setSurface('portfolio');
+            }}
+            className="text-left text-sm font-semibold text-[#E2E8F0] hover:text-[#F4B323] py-2 border-b border-[#152B47]"
           >
             Portfolio
-          </a>
-          <a
-            href="#precision"
-            onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-semibold text-[#E2E8F0] hover:text-[#F4B323] py-2 border-b border-[#152B47]"
-          >
-            HSE & Quality
-          </a>
-          <a
-            href="#contact"
-            onClick={() => setMobileMenuOpen(false)}
-            className="text-sm font-semibold text-[#E2E8F0] hover:text-[#F4B323] py-2 border-b border-[#152B47]"
+          </button>
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              setSurface('contact');
+            }}
+            className="text-left text-sm font-semibold text-[#E2E8F0] hover:text-[#F4B323] py-2 border-b border-[#152B47]"
           >
             Contact
-          </a>
+          </button>
 
           <div className="pt-2 flex flex-col gap-2.5">
             <button

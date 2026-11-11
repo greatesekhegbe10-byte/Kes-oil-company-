@@ -22,7 +22,7 @@ import {
   initialActivityLogs 
 } from '../data/mockData';
 
-export type SurfaceType = 'corporate' | 'management' | 'client' | 'supplier';
+export type SurfaceType = 'corporate' | 'management' | 'client' | 'supplier' | 'about' | 'services' | 'portfolio' | 'contact';
 
 export interface ToastMessage {
   id: string;
