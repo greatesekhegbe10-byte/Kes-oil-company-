@@ -61,7 +61,7 @@ const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 'cryo-compression',
-    image: '/hero/engineer.avif',
+    image: '/hero/engineer.jpg',
     titlePart1: 'Engineering & Technical Operations.',
     titlePart2: 'Field Precision.',
     subtitle: 'Expert field engineers in safety gear reviewing technical operations, cryogenic gas monetization, and compression retrofits supporting national industrialization.',
