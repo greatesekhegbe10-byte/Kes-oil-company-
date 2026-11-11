@@ -12,7 +12,7 @@ export const DisciplinesSection: React.FC = () => {
       title: 'Oil & Gas Services',
       subtitle: 'Upstream, midstream & deepwater engineering',
       description: 'Procurement, hyperbaric installation, API valve distribution, and technical maintenance across downstream refineries & offshore platforms.',
-      image: '/hero/hero1.jpg',
+      image: '/hero/oil-gas-engineer-sunset.jpg',
       stat: '100% On-Stream',
       action: () => setSurface('services'),
     },
@@ -22,7 +22,7 @@ export const DisciplinesSection: React.FC = () => {
       title: 'Civil Contracting & Fabrication',
       subtitle: 'Heavy structural & swamp corridor construction',
       description: 'Site development, structural skid assembly, swamp trenching, heavy civil earthworks, and pipeline crossing stations engineered to API specifications.',
-      image: '/hero/pipeline-excavator.jpg',
+      image: '/hero/offshore-flare-sunset.jpg',
       stat: '480 km Corridor',
       action: () => setSurface('services'),
     },
@@ -32,7 +32,7 @@ export const DisciplinesSection: React.FC = () => {
       title: 'General Energy Solutions',
       subtitle: 'Power grid, gas monetization & zero-routine flaring',
       description: 'High-voltage transmission, cryogenic gas recovery, flare elimination compression skids, and turnkey industrial energy systems for national growth.',
-      image: '/hero/hero3.jpg',
+      image: '/hero/pumpjack-refinery-sunset.jpg',
       stat: '92.4% Gas Captured',
       action: () => setSurface('services'),
     },
@@ -117,3 +117,4 @@ export const DisciplinesSection: React.FC = () => {
     </section>
   );
 };
+

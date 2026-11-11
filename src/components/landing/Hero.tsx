@@ -27,15 +27,48 @@ interface HeroSlide {
 
 const HERO_SLIDES: HeroSlide[] = [
   {
-    id: 'offshore-platform',
-    image: '/hero/offshore-platform-helipad.jpg',
+    id: 'oil-gas-engineer-sunset',
+    image: '/hero/oil-gas-engineer-sunset.jpg',
     titlePart1: 'KES Energy Services.',
     titlePart2: 'Building Infrastructure. Powering Progress.',
-    subtitle: 'KES Energy Services is an indigenous Nigerian firm delivering high-integrity oil & gas, offshore EPC, and integrated energy projects with discipline, safety, and follow-through.',
-    fieldTag: 'OFFSHORE PRODUCTION & DRILLING • DEEPWATER ASSETS',
-    telemetry: 'Offshore Helipad & Process Facility: 100% Operational',
+    subtitle: 'KES Energy Services is an indigenous Nigerian firm delivering high-integrity offshore engineering, refinery infrastructure, and integrated energy EPC solutions with discipline, safety, and follow-through.',
+    fieldTag: 'OFFSHORE DRILLING & PRODUCTION • DEEPWATER BASIN',
+    telemetry: 'Offshore Flare & Separation Topside: 100% Operational',
     statLabel: 'Deepwater Projects',
     statValue: '18+',
+  },
+  {
+    id: 'offshore-flare-sunset',
+    image: '/hero/offshore-flare-sunset.jpg',
+    titlePart1: 'Offshore Processing.',
+    titlePart2: 'Thermal Performance.',
+    subtitle: 'State-of-the-art offshore production platforms, gas compression loops, subsea manifold installations, and automated custody transfer metering.',
+    fieldTag: 'OFFSHORE PLATFORM • NIGER DELTA SHALLOW WATER',
+    telemetry: 'Production Gas Lift Pressure: 142.6 Bar SLA Target Met',
+    statLabel: 'Zero LTI Hours',
+    statValue: '2.4M',
+  },
+  {
+    id: 'pumpjack-refinery-sunset',
+    image: '/hero/pumpjack-refinery-sunset.jpg',
+    titlePart1: 'Downstream Upgrades.',
+    titlePart2: 'Refining The Future.',
+    subtitle: 'Turnkey crude distillation units, pumpjack field installations, high-pressure utility looping, and petrochemical revamp services built to world-class API & ASME specifications.',
+    fieldTag: 'DOWNSTREAM REFINING & EXTRACTION • CORRIDOR TERMINALS',
+    telemetry: 'Extraction & Processing Efficiency: 96.8% Certified',
+    statLabel: 'Refining Assets',
+    statValue: '24+',
+  },
+  {
+    id: 'offshore-platform',
+    image: '/hero/offshore-platform-helipad.jpg',
+    titlePart1: 'Deepwater Delivery.',
+    titlePart2: 'Unbroken Supply Chains.',
+    subtitle: 'Offshore helipad logistics, heavy topside crane lifting, rigless intervention support, and subsea umbilical termination for national energy security.',
+    fieldTag: 'FIELD OPERATIONS • BONGA & EGINA ASSETS',
+    telemetry: 'Deepwater Helipad Facility: 100% SIL 3 Verified',
+    statLabel: 'Active Contracts',
+    statValue: '47+',
   },
   {
     id: 'pipeline-corridor',
@@ -56,8 +89,8 @@ const HERO_SLIDES: HeroSlide[] = [
     subtitle: 'Specialized field engineers and technical consultants delivering swamp inspections, non-destructive testing, and marine transport with 2.4 million consecutive LTI-free hours.',
     fieldTag: 'FIELD CONSULTING & MARINE SUPPORT • NIGER DELTA',
     telemetry: 'HSE Audit: 2.4 Million Safe Man-Hours Certified',
-    statLabel: 'Zero LTI Hours',
-    statValue: '2.4M',
+    statLabel: 'Field Engineers',
+    statValue: '120+',
   },
   {
     id: 'valve-inspection',
@@ -108,20 +141,20 @@ export const Hero: React.FC = () => {
               isActive ? 'opacity-100 z-10' : 'opacity-0 z-0'
             }`}
           >
-            {/* Living Ken Burns Zoom/Pan Animation with Crisp Image Rendering */}
+            {/* Living Ken Burns Zoom/Pan Animation with Crisp 4K Uncompressed Image Rendering */}
             <img
               src={s.image}
               alt={s.fieldTag}
-              className={`w-full h-full object-cover brightness-105 contrast-110 saturate-110 transition-transform duration-[8000ms] ease-out ${
+              className={`w-full h-full object-cover brightness-100 contrast-105 saturate-105 transition-transform duration-[8000ms] ease-out ${
                 isActive ? 'scale-105 translate-x-1' : 'scale-100 translate-x-0'
               }`}
             />
 
-            {/* High-Clarity Warm Atmospheric Vignette matching visual reference */}
+            {/* Ultra-Clear Atmospheric Vignette: Image remains 100% visible across the entire canvas with subtle contrast on the left */}
             <div 
               className="absolute inset-0"
               style={{
-                background: 'linear-gradient(90deg, rgba(7,22,41,0.92) 0%, rgba(7,22,41,0.65) 45%, rgba(7,22,41,0.28) 75%, rgba(7,22,41,0.15) 100%), linear-gradient(0deg, rgba(7,22,41,0.85) 0%, transparent 45%), radial-gradient(circle at 80% 40%, rgba(244,179,35,0.08) 0%, transparent 60%)'
+                background: 'linear-gradient(90deg, rgba(7,22,41,0.85) 0%, rgba(7,22,41,0.45) 45%, rgba(7,22,41,0.15) 75%, rgba(7,22,41,0.05) 100%), linear-gradient(0deg, rgba(7,22,41,0.7) 0%, transparent 40%)'
               }}
             />
           </div>
