@@ -42,13 +42,21 @@ export const SupplierPortal: React.FC = () => {
             </div>
           </div>
 
-          <button
-            onClick={() => setSurface('corporate')}
-            className="text-xs font-semibold text-[#8B5CF6] hover:underline flex items-center gap-1 border-l border-[#E2E8F0] pl-4"
-          >
-            <span>Exit Portal</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-2 border-l border-[#E2E8F0] pl-3">
+            <button
+              onClick={() => setSurface('management')}
+              className="text-xs font-semibold text-slate-700 hover:text-[#2563EB] px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 transition-colors"
+            >
+              Operations HQ
+            </button>
+            <button
+              onClick={() => setSurface('corporate')}
+              className="text-xs font-semibold text-[#8B5CF6] hover:underline flex items-center gap-1"
+            >
+              <span>Corporate Site</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </header>
 

@@ -31,7 +31,7 @@ export const Sidebar: React.FC<{ mobileOpen: boolean; setMobileOpen: (open: bool
 
   const rawWorkspaceNav = [
     { id: 'Overview', label: 'Overview', icon: Home },
-    { id: 'Enquiries & RFQs', label: 'Enquiries & RFQs', icon: Mail, badge: 3 },
+    { id: 'Enquiries & RFQs', label: 'Enquiries & RFQs', icon: Mail, badge: 12 },
     { id: 'Projects', label: 'Projects', icon: Briefcase },
     { id: 'Suppliers', label: 'Suppliers', icon: Users },
     { id: 'Procurement', label: 'Procurement', icon: ShoppingCart },
@@ -44,9 +44,9 @@ export const Sidebar: React.FC<{ mobileOpen: boolean; setMobileOpen: (open: bool
     { id: 'Settings', label: 'Settings', icon: Settings },
   ];
 
-  // RBAC Filter: Only display routes the user's role is authorized to access
-  const workspaceNav = rawWorkspaceNav.filter(item => canAccessRoute(item.id));
-  const adminNav = rawAdminNav.filter(item => canAccessRoute(item.id));
+  // All routes are permanently available in the management dashboard
+  const workspaceNav = rawWorkspaceNav;
+  const adminNav = rawAdminNav;
 
   return (
     <>

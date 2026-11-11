@@ -40,6 +40,7 @@ export const ManagementDashboard: React.FC = () => {
       case 'Reports':
         return <ReportsTab />;
       case 'Team management':
+      case 'Team Management':
         return <TeamTab />;
       case 'Settings':
         return <SettingsTab />;

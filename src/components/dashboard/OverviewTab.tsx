@@ -24,6 +24,8 @@ export const OverviewTab: React.FC = () => {
     setSurface 
   } = usePlatform();
 
+  const [portfolioView, setPortfolioView] = React.useState<'table' | 'curve'>('table');
+
   // 5 exact projects from screenshot
   const projects = [
     {
@@ -308,10 +310,33 @@ export const OverviewTab: React.FC = () => {
         {/* LEFT COLUMN: PROJECT PORTFOLIO (8 COLS) */}
         <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 shadow-xs p-5">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-slate-700" />
-              <h3 className="text-sm font-bold text-slate-900">Project Portfolio</h3>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-slate-700" />
+                <h3 className="text-sm font-bold text-slate-900">Project Portfolio</h3>
+              </div>
+
+              {/* View Toggle */}
+              <div className="hidden sm:flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-[11px] font-semibold">
+                <button
+                  onClick={() => setPortfolioView('table')}
+                  className={`px-2.5 py-1 rounded-md transition-all ${
+                    portfolioView === 'table' ? 'bg-white text-[#2563EB] shadow-xs font-bold' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Portfolio Table
+                </button>
+                <button
+                  onClick={() => setPortfolioView('curve')}
+                  className={`px-2.5 py-1 rounded-md transition-all ${
+                    portfolioView === 'curve' ? 'bg-white text-[#2563EB] shadow-xs font-bold' : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Delivery Progress Curve
+                </button>
+              </div>
             </div>
+
             <button
               onClick={() => setActiveManagementTab('Projects')}
               className="text-xs font-semibold text-[#2563EB] hover:underline flex items-center gap-1"
@@ -321,87 +346,142 @@ export const OverviewTab: React.FC = () => {
             </button>
           </div>
 
-          {/* Portfolio Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-100 text-slate-400 font-medium">
-                  <th className="pb-2.5 font-medium">Project Name</th>
-                  <th className="pb-2.5 font-medium">Project Manager</th>
-                  <th className="pb-2.5 font-medium">Progress</th>
-                  <th className="pb-2.5 font-medium">Status</th>
-                  <th className="pb-2.5 font-medium">Deadline</th>
-                  <th className="pb-2.5 font-medium text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {projects.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50/70 transition-colors">
-                    {/* Project Name + Thumbnail */}
-                    <td className="py-3 font-semibold text-slate-900">
-                      <div className="flex items-center gap-2.5">
-                        <img
-                          src={p.thumbnail}
-                          alt={p.name}
-                          className="w-9 h-7 rounded object-cover border border-slate-200 flex-shrink-0"
-                        />
-                        <span className="truncate max-w-[160px] sm:max-w-[200px]">{p.name}</span>
-                      </div>
-                    </td>
-
-                    {/* Project Manager + Avatar */}
-                    <td className="py-3 text-slate-700">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={p.managerAvatar}
-                          alt={p.manager}
-                          className="w-6 h-6 rounded-full object-cover border border-slate-200 flex-shrink-0"
-                        />
-                        <span className="truncate">{p.manager}</span>
-                      </div>
-                    </td>
-
-                    {/* Progress Bar + % */}
-                    <td className="py-3">
-                      <div className="flex items-center gap-2.5 min-w-[100px]">
-                        <div className="w-20 bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                          <div 
-                            className="bg-[#2563EB] h-1.5 rounded-full" 
-                            style={{ width: `${p.progress}%` }} 
-                          />
-                        </div>
-                        <span className="text-[11px] font-semibold text-slate-600">{p.progress}%</span>
-                      </div>
-                    </td>
-
-                    {/* Status Badge */}
-                    <td className="py-3">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold ${p.badgeClass}`}>
-                        <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                        {p.status}
-                      </span>
-                    </td>
-
-                    {/* Deadline */}
-                    <td className="py-3 text-slate-600 text-[11px] whitespace-nowrap">
-                      {p.deadline}
-                    </td>
-
-                    {/* Actions */}
-                    <td className="py-3 text-right">
-                      <button 
-                        onClick={() => setActiveManagementTab('Projects')}
-                        className="text-slate-400 hover:text-slate-700 p-1"
-                        title="Options"
-                      >
-                        <MoreHorizontal className="w-4 h-4" />
-                      </button>
-                    </td>
+          {portfolioView === 'table' ? (
+            /* Portfolio Table */
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-slate-100 text-slate-400 font-medium">
+                    <th className="pb-2.5 font-medium">Project Name</th>
+                    <th className="pb-2.5 font-medium">Project Manager</th>
+                    <th className="pb-2.5 font-medium">Progress</th>
+                    <th className="pb-2.5 font-medium">Status</th>
+                    <th className="pb-2.5 font-medium">Deadline</th>
+                    <th className="pb-2.5 font-medium text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {projects.map((p) => (
+                    <tr key={p.id} className="hover:bg-slate-50/70 transition-colors">
+                      {/* Project Name + Thumbnail */}
+                      <td className="py-3 font-semibold text-slate-900">
+                        <div className="flex items-center gap-2.5">
+                          <img
+                            src={p.thumbnail}
+                            alt={p.name}
+                            className="w-9 h-7 rounded object-cover border border-slate-200 flex-shrink-0"
+                          />
+                          <span className="truncate max-w-[160px] sm:max-w-[200px]">{p.name}</span>
+                        </div>
+                      </td>
+
+                      {/* Project Manager + Avatar */}
+                      <td className="py-3 text-slate-700">
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={p.managerAvatar}
+                            alt={p.manager}
+                            className="w-6 h-6 rounded-full object-cover border border-slate-200 flex-shrink-0"
+                          />
+                          <span className="truncate">{p.manager}</span>
+                        </div>
+                      </td>
+
+                      {/* Progress Bar + % */}
+                      <td className="py-3">
+                        <div className="flex items-center gap-2.5 min-w-[100px]">
+                          <div className="w-20 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className="bg-[#2563EB] h-1.5 rounded-full" 
+                              style={{ width: `${p.progress}%` }} 
+                            />
+                          </div>
+                          <span className="text-[11px] font-semibold text-slate-600">{p.progress}%</span>
+                        </div>
+                      </td>
+
+                      {/* Status Badge */}
+                      <td className="py-3">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold ${p.badgeClass}`}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                          {p.status}
+                        </span>
+                      </td>
+
+                      {/* Deadline */}
+                      <td className="py-3 text-slate-600 text-[11px] whitespace-nowrap">
+                        {p.deadline}
+                      </td>
+
+                      {/* Actions */}
+                      <td className="py-3 text-right">
+                        <button 
+                          onClick={() => setActiveManagementTab('Projects')}
+                          className="text-slate-400 hover:text-slate-700 p-1"
+                          title="Options"
+                        >
+                          <MoreHorizontal className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            /* Delivery at a glance Curve */
+            <div className="pt-2">
+              <div className="flex items-center justify-between text-xs mb-3 text-slate-600">
+                <span className="font-bold text-slate-900">18 Active Projects Progress Trajectory</span>
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-1 text-emerald-600 font-semibold"><span className="w-2 h-2 rounded-full bg-emerald-500" /> On track 12</span>
+                  <span className="flex items-center gap-1 text-amber-600 font-semibold"><span className="w-2 h-2 rounded-full bg-amber-500" /> At risk 4</span>
+                  <span className="flex items-center gap-1 text-red-600 font-semibold"><span className="w-2 h-2 rounded-full bg-red-500" /> Delayed 2</span>
+                </div>
+              </div>
+
+              <div className="relative h-48 w-full pt-2">
+                <svg className="w-full h-full overflow-visible" viewBox="0 0 700 160" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="curveGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#2563EB" stopOpacity="0.25" />
+                      <stop offset="100%" stopColor="#2563EB" stopOpacity="0.01" />
+                    </linearGradient>
+                  </defs>
+
+                  <line x1="0" y1="20" x2="700" y2="20" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                  <line x1="0" y1="65" x2="700" y2="65" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                  <line x1="0" y1="110" x2="700" y2="110" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="3 3" />
+                  <line x1="0" y1="150" x2="700" y2="150" stroke="#E2E8F0" strokeWidth="1" />
+
+                  <path
+                    d="M 30 140 C 120 130, 200 115, 290 100 C 380 85, 470 60, 560 45 C 620 35, 660 28, 690 22 L 690 150 L 30 150 Z"
+                    fill="url(#curveGradient)"
+                  />
+                  <path
+                    d="M 30 140 C 120 130, 200 115, 290 100 C 380 85, 470 60, 560 45 C 620 35, 660 28, 690 22"
+                    fill="none"
+                    stroke="#2563EB"
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                  />
+
+                  <circle cx="290" cy="100" r="4.5" fill="#2563EB" stroke="#FFF" strokeWidth="2" />
+                  <circle cx="560" cy="45" r="4.5" fill="#2563EB" stroke="#FFF" strokeWidth="2" />
+                  <circle cx="690" cy="22" r="5.5" fill="#10B981" stroke="#FFF" strokeWidth="2" />
+                </svg>
+
+                <div className="flex justify-between text-[10px] text-slate-400 font-semibold px-4 pt-2">
+                  <span>JAN</span>
+                  <span>MAR</span>
+                  <span>MAY</span>
+                  <span>JUL</span>
+                  <span>SEP</span>
+                  <span className="text-[#2563EB] font-bold">NOV (87% Current)</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* RIGHT COLUMN: KEY MILESTONES (4 COLS) */}
@@ -422,25 +502,31 @@ export const OverviewTab: React.FC = () => {
             </div>
 
             {/* Vertical Stepper List */}
-            <div className="relative pl-6 space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
-              {/* Milestone 1: Nov 5 - Completed */}
+            <div className="relative pl-6 space-y-5 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
+              {/* Milestone 1: Egina FPSO */}
               <div className="relative">
-                <div className="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-[#2563EB] text-white flex items-center justify-center ring-4 ring-white">
+                <div className="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-[#2563EB] text-white flex items-center justify-center ring-4 ring-white shadow-xs">
                   <Check className="w-3 h-3 stroke-[2.5]" />
                 </div>
-                <div className="text-[11px] text-slate-400 font-medium">Nov 5, 2026</div>
-                <div className="text-xs font-bold text-slate-900">Project Kickoff Meeting</div>
-                <div className="text-[11px] text-slate-500">Delta Energy Facility</div>
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#D97706]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#F4B323]" />
+                  <span>TODAY 14:30</span>
+                </div>
+                <div className="text-xs font-bold text-slate-900">Technical review & sign-off</div>
+                <div className="text-[11px] text-slate-500">Egina FPSO · Subsea Controls (6 deliverables)</div>
               </div>
 
-              {/* Milestone 2: Nov 12 - Completed */}
+              {/* Milestone 2: Escravos Pipeline FAT */}
               <div className="relative">
-                <div className="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-[#2563EB] text-white flex items-center justify-center ring-4 ring-white">
+                <div className="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-[#2563EB] text-white flex items-center justify-center ring-4 ring-white shadow-xs">
                   <Check className="w-3 h-3 stroke-[2.5]" />
                 </div>
-                <div className="text-[11px] text-slate-400 font-medium">Nov 12, 2026</div>
-                <div className="text-xs font-bold text-slate-900">Technical Review</div>
-                <div className="text-[11px] text-slate-500">Rivers Refinery Upgrade</div>
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#2563EB]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB]" />
+                  <span>THU, 13 NOV 10:00</span>
+                </div>
+                <div className="text-xs font-bold text-slate-900">Factory Acceptance Test (FAT)</div>
+                <div className="text-[11px] text-slate-500">Escravos Pipeline · High-pressure Valves</div>
               </div>
 
               {/* Milestone 3: Dec 1 - Active / Upcoming */}
@@ -455,7 +541,7 @@ export const OverviewTab: React.FC = () => {
                     Upcoming
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-500">Lagos Pipeline Expansion</div>
+                <div className="text-[11px] text-slate-500">Lagos Pipeline Expansion Tie-in</div>
               </div>
 
               {/* Milestone 4: Dec 15 - Pending */}
@@ -464,8 +550,8 @@ export const OverviewTab: React.FC = () => {
                   <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                 </div>
                 <div className="text-[11px] text-slate-400 font-medium">Dec 15, 2026</div>
-                <div className="text-xs font-bold text-slate-700">Project Approval</div>
-                <div className="text-[11px] text-slate-500">Abuja Power Project</div>
+                <div className="text-xs font-bold text-slate-700">Project Approval & NUPRC Filing</div>
+                <div className="text-[11px] text-slate-500">Abuja Power Project Phase II</div>
               </div>
             </div>
           </div>

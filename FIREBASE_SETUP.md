@@ -13,7 +13,7 @@ The KES platform utilizes Google Firebase for production-grade authentication, C
 ### Verified Client Configuration
 ```javascript
 const firebaseConfig = {
-  apiKey: "AIzaSyCu9BlIW5lbtqgBDQAYOm0aFcx2aW699i8",
+  apiKey: "your_api_key_here",
   authDomain: "kes-energy-services.firebaseapp.com",
   projectId: "kes-energy-services",
   storageBucket: "kes-energy-services.firebasestorage.app",

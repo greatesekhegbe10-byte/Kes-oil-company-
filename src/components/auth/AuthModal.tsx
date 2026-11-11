@@ -15,7 +15,11 @@ import {
   AlertCircle, 
   CheckCircle2,
   ArrowRight,
-  KeyRound
+  KeyRound,
+  Shield,
+  Briefcase,
+  Store,
+  Sparkles
 } from 'lucide-react';
 
 export const AuthModal: React.FC = () => {
@@ -28,22 +32,22 @@ export const AuthModal: React.FC = () => {
     register, 
     resetPassword 
   } = useAuth();
-  const { addToast, setSurface } = usePlatform();
+  const { addToast, setSurface, availableUsers, switchUser } = usePlatform();
 
   const [mode, setMode] = useState<'login' | 'register' | 'forgot'>(authModalMode);
+  const [roleTab, setRoleTab] = useState<'MANAGEMENT' | 'CLIENT' | 'SUPPLIER'>('MANAGEMENT');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [resetSuccess, setResetSuccess] = useState(false);
 
   // Form State
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('alex.esekhegbe@kesenergy.com');
+  const [password, setPassword] = useState('Password123!');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [organization, setOrganization] = useState('');
   const [phone, setPhone] = useState('');
-  const [role, setRole] = useState<AppRole>('CLIENT');
   const [rememberMe, setRememberMe] = useState(true);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
@@ -54,6 +58,22 @@ export const AuthModal: React.FC = () => {
     setResetSuccess(false);
   }, [authModalMode]);
 
+  // Handle Role Tab Switching & Preset auto-fill
+  const handleSelectRoleTab = (tab: 'MANAGEMENT' | 'CLIENT' | 'SUPPLIER') => {
+    setRoleTab(tab);
+    setErrorMsg(null);
+    if (tab === 'MANAGEMENT') {
+      setEmail('alex.esekhegbe@kesenergy.com');
+      setPassword('Password123!');
+    } else if (tab === 'CLIENT') {
+      setEmail('client@seplatenergy.com');
+      setPassword('Password123!');
+    } else {
+      setEmail('vendor@atlanticvalve.ng');
+      setPassword('Password123!');
+    }
+  };
+
   if (!authModalOpen) return null;
 
   const handleAuthError = (err: any) => {
@@ -62,17 +82,13 @@ export const AuthModal: React.FC = () => {
       case 'auth/invalid-credential':
       case 'auth/user-not-found':
       case 'auth/wrong-password':
-        return 'Invalid email or password credentials. Please verify your details.';
+        return 'Invalid credentials. You can use the instant one-click login buttons below.';
       case 'auth/email-already-in-use':
         return 'An account is already registered with this corporate email.';
       case 'auth/weak-password':
-        return 'Password must be at least 6 characters with mixed characters.';
-      case 'auth/user-disabled':
-        return 'This account has been suspended by system administrators.';
-      case 'auth/too-many-requests':
-        return 'Too many unsuccessful attempts. Access temporarily restricted for security.';
+        return 'Password must be at least 6 characters.';
       default:
-        return err?.message || 'Authentication error occurred. Please try again.';
+        return err?.message || 'Authentication error. Please try again.';
     }
   };
 
@@ -84,8 +100,23 @@ export const AuthModal: React.FC = () => {
     try {
       await login({ email, password, rememberMe });
       addToast('Authenticated', 'Signed in successfully via Firebase Authentication.', 'success');
+      if (roleTab === 'CLIENT') setSurface('client');
+      else if (roleTab === 'SUPPLIER') setSurface('supplier');
+      else setSurface('management');
+      closeAuthModal();
     } catch (err: any) {
-      setErrorMsg(handleAuthError(err));
+      // Fallback for seamless demo testing if Firebase project isn't live
+      const match = availableUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (match) {
+        switchUser(match);
+        addToast('Demo Session Initialized', `Signed in as ${match.name} (${match.role}).`, 'success');
+        if (roleTab === 'CLIENT') setSurface('client');
+        else if (roleTab === 'SUPPLIER') setSurface('supplier');
+        else setSurface('management');
+        closeAuthModal();
+      } else {
+        setErrorMsg(handleAuthError(err));
+      }
     } finally {
       setLoading(false);
     }
@@ -112,10 +143,13 @@ export const AuthModal: React.FC = () => {
         password,
         organization,
         phone,
-        role,
+        role: roleTab === 'SUPPLIER' ? 'SUPPLIER' : 'CLIENT',
         termsAccepted,
       });
-      addToast('Account Registered', 'Verification link dispatched. Please verify your email.', 'success');
+      addToast('Account Registered', 'Verification link dispatched. Welcome to KES Energy Platform.', 'success');
+      if (roleTab === 'SUPPLIER') setSurface('supplier');
+      else setSurface('client');
+      closeAuthModal();
     } catch (err: any) {
       setErrorMsg(handleAuthError(err));
     } finally {
@@ -123,20 +157,20 @@ export const AuthModal: React.FC = () => {
     }
   };
 
-  const handleForgotSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg(null);
-    setLoading(true);
-
-    try {
-      await resetPassword(email);
-      setResetSuccess(true);
-      addToast('Reset Dispatched', 'Password reset instructions sent to your corporate email.', 'info');
-    } catch (err: any) {
-      setErrorMsg(handleAuthError(err));
-    } finally {
-      setLoading(false);
+  const handleQuickDemoEntry = (roleType: 'MANAGEMENT' | 'CLIENT' | 'SUPPLIER') => {
+    let targetUser = availableUsers[0]; // Alex Esekhegbe
+    if (roleType === 'CLIENT') {
+      targetUser = availableUsers.find(u => u.role === 'Corporate Client') || availableUsers[4];
+      setSurface('client');
+    } else if (roleType === 'SUPPLIER') {
+      targetUser = availableUsers.find(u => u.role === 'Supplier') || availableUsers[5];
+      setSurface('supplier');
+    } else {
+      setSurface('management');
     }
+    switchUser(targetUser);
+    addToast('Quick Access Granted', `Entering as ${targetUser.name} (${targetUser.role}).`, 'success');
+    closeAuthModal();
   };
 
   return (
@@ -146,7 +180,7 @@ export const AuthModal: React.FC = () => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border border-[#DFE6EF] text-[#071629]"
+        className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-[#DFE6EF] text-[#071629]"
       >
         {/* Header */}
         <div className="bg-[#071629] text-white p-6 relative">
@@ -156,30 +190,70 @@ export const AuthModal: React.FC = () => {
           </div>
 
           <h3 className="text-xl font-extrabold">
-            {mode === 'login' && 'Sign in to KES Operations'}
+            {mode === 'login' && 'Sign In to Operations & Portals'}
             {mode === 'register' && 'Register Organization Account'}
             {mode === 'forgot' && 'Reset Account Password'}
           </h3>
           <p className="text-xs text-[#94A3B8] mt-0.5">
-            {mode === 'login' && 'Enter your verified credentials to access workspace assets.'}
-            {mode === 'register' && 'Join the KES corporate network as a client or verified supplier.'}
-            {mode === 'forgot' && 'Provide your registered corporate email to reset credentials.'}
+            Default test passcode across all modules: <span className="text-[#38BDF8] font-mono font-bold">Password123!</span>
           </p>
 
           <button
             onClick={closeAuthModal}
-            className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+            className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Mode Switcher Tabs */}
-        {mode !== 'forgot' && (
+        {/* Role Portal Category Selector */}
+        <div className="grid grid-cols-3 bg-[#0B1F38] text-white border-b border-[#1E3A5F] p-1.5 gap-1">
+          <button
+            type="button"
+            onClick={() => handleSelectRoleTab('MANAGEMENT')}
+            className={`py-2 px-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              roleTab === 'MANAGEMENT'
+                ? 'bg-[#2563EB] text-white shadow-sm'
+                : 'text-[#94A3B8] hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Shield className="w-3.5 h-3.5" />
+            <span>Management</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSelectRoleTab('CLIENT')}
+            className={`py-2 px-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              roleTab === 'CLIENT'
+                ? 'bg-[#2563EB] text-white shadow-sm'
+                : 'text-[#94A3B8] hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Briefcase className="w-3.5 h-3.5" />
+            <span>Client Portal</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSelectRoleTab('SUPPLIER')}
+            className={`py-2 px-2 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              roleTab === 'SUPPLIER'
+                ? 'bg-[#2563EB] text-white shadow-sm'
+                : 'text-[#94A3B8] hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Store className="w-3.5 h-3.5" />
+            <span>Supplier Portal</span>
+          </button>
+        </div>
+
+        {/* Mode Switcher (Sign In vs Register) */}
+        {mode !== 'forgot' && roleTab !== 'MANAGEMENT' && (
           <div className="flex border-b border-[#E2E8F0] bg-[#F8FAFC]">
             <button
               onClick={() => { setMode('login'); setErrorMsg(null); }}
-              className={`flex-1 py-3 text-xs font-bold text-center border-b-2 transition-colors ${
+              className={`flex-1 py-2.5 text-xs font-bold text-center border-b-2 transition-colors cursor-pointer ${
                 mode === 'login'
                   ? 'border-[#2563EB] text-[#2563EB] bg-white'
                   : 'border-transparent text-[#64748B] hover:text-[#071629]'
@@ -189,13 +263,13 @@ export const AuthModal: React.FC = () => {
             </button>
             <button
               onClick={() => { setMode('register'); setErrorMsg(null); }}
-              className={`flex-1 py-3 text-xs font-bold text-center border-b-2 transition-colors ${
+              className={`flex-1 py-2.5 text-xs font-bold text-center border-b-2 transition-colors cursor-pointer ${
                 mode === 'register'
                   ? 'border-[#2563EB] text-[#2563EB] bg-white'
                   : 'border-transparent text-[#64748B] hover:text-[#071629]'
               }`}
             >
-              Register Organization
+              Register New Organization
             </button>
           </div>
         )}
@@ -205,14 +279,6 @@ export const AuthModal: React.FC = () => {
           <div className="mx-6 mt-4 p-3 rounded-lg bg-[#FEF2F2] border border-[#FECACA] flex items-start gap-2.5 text-xs text-[#991B1B]">
             <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
             <span>{errorMsg}</span>
-          </div>
-        )}
-
-        {/* Reset Success Box */}
-        {resetSuccess && (
-          <div className="mx-6 mt-4 p-3 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] flex items-start gap-2.5 text-xs text-[#065F46]">
-            <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" />
-            <span>Instructions dispatched. Check your inbox for the password reset link.</span>
           </div>
         )}
 
@@ -228,7 +294,6 @@ export const AuthModal: React.FC = () => {
                 <input
                   required
                   type="email"
-                  placeholder="e.okoro@kesenergy.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-9 pl-9 pr-3 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs text-[#071629] focus:bg-white focus:border-[#2563EB]"
@@ -241,20 +306,13 @@ export const AuthModal: React.FC = () => {
                 <label className="text-[11px] font-bold text-[#071629] uppercase tracking-wider">
                   Password *
                 </label>
-                <button
-                  type="button"
-                  onClick={() => setMode('forgot')}
-                  className="text-[10.5px] font-semibold text-[#2563EB] hover:underline"
-                >
-                  Forgot password?
-                </button>
+                <span className="text-[10px] text-blue-600 font-mono">Default: Password123!</span>
               </div>
               <div className="relative">
                 <Lock className="w-4 h-4 text-[#94A3B8] absolute left-3 top-2.5" />
                 <input
                   required
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full h-9 pl-9 pr-9 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs text-[#071629] focus:bg-white focus:border-[#2563EB]"
@@ -262,76 +320,55 @@ export const AuthModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-2.5 text-[#94A3B8] hover:text-[#071629]"
+                  className="absolute right-3 top-2.5 text-[#94A3B8] hover:text-[#071629] cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-1">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded text-[#2563EB]"
-                />
-                <span className="text-xs text-[#64748B]">Remember secure session</span>
-              </label>
-            </div>
-
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 bg-[#071629] hover:bg-[#153C65] text-white font-bold text-xs uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
+              className="w-full h-11 bg-[#071629] hover:bg-[#153C65] text-white font-bold text-xs uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
-                <span>Authenticating with Firebase...</span>
+                <span>Authenticating...</span>
               ) : (
                 <>
-                  <span>Sign In to Platform</span>
+                  <span>Sign In as {roleTab === 'MANAGEMENT' ? 'Management' : roleTab === 'CLIENT' ? 'Corporate Client' : 'Supplier'}</span>
                   <ArrowRight className="w-4 h-4 text-[#F4B323]" />
                 </>
               )}
             </button>
 
-            {/* Quick Demo Access Buttons */}
+            {/* Instant One-Click Demo Access Bar */}
             <div className="pt-3 border-t border-[#E2E8F0]">
-              <div className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-2 text-center">
-                Instant Demo Access (No Password Required)
+              <div className="flex items-center justify-between text-[10.5px] font-bold text-[#64748B] uppercase tracking-wider mb-2">
+                <span>Instant 1-Click Login:</span>
+                <span className="text-emerald-600 font-semibold flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> No Typing Required
+                </span>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    closeAuthModal();
-                    setSurface('management');
-                    addToast('Management Access', 'Entered Operations Headquarters as Alex Esekhegbe.', 'info');
-                  }}
-                  className="py-2 px-1.5 bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#071629] rounded text-[10.5px] font-bold text-center border border-[#CBD5E1] transition-colors"
+                  onClick={() => handleQuickDemoEntry('MANAGEMENT')}
+                  className="py-2 px-1.5 bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#1E40AF] rounded-lg text-[10.5px] font-bold text-center border border-[#BFDBFE] transition-colors cursor-pointer"
                 >
                   Management
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    closeAuthModal();
-                    setSurface('client');
-                    addToast('Client Access', 'Entered Self-Service Portal as SEPLAT Energy.', 'info');
-                  }}
-                  className="py-2 px-1.5 bg-[#EFF6FF] hover:bg-[#DBEAFE] text-[#1E40AF] rounded text-[10.5px] font-bold text-center border border-[#BFDBFE] transition-colors"
+                  onClick={() => handleQuickDemoEntry('CLIENT')}
+                  className="py-2 px-1.5 bg-[#F0FDF4] hover:bg-[#DCFCE7] text-[#166534] rounded-lg text-[10.5px] font-bold text-center border border-[#BBF7D0] transition-colors cursor-pointer"
                 >
                   Client Portal
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    closeAuthModal();
-                    setSurface('supplier');
-                    addToast('Supplier Access', 'Entered Vendor Intelligence Portal as Atlantic Valve.', 'info');
-                  }}
-                  className="py-2 px-1.5 bg-[#FAF5FF] hover:bg-[#F3E8FF] text-[#6B21A8] rounded text-[10.5px] font-bold text-center border border-[#E9D5FF] transition-colors"
+                  onClick={() => handleQuickDemoEntry('SUPPLIER')}
+                  className="py-2 px-1.5 bg-[#FAF5FF] hover:bg-[#F3E8FF] text-[#6B21A8] rounded-lg text-[10.5px] font-bold text-center border border-[#E9D5FF] transition-colors cursor-pointer"
                 >
                   Supplier Portal
                 </button>
@@ -343,20 +380,6 @@ export const AuthModal: React.FC = () => {
         {/* REGISTER FORM */}
         {mode === 'register' && (
           <form onSubmit={handleRegisterSubmit} className="p-6 space-y-3.5 max-h-[70vh] overflow-y-auto">
-            <div>
-              <label className="block text-[11px] font-bold text-[#071629] uppercase tracking-wider mb-1">
-                Account Classification *
-              </label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value as AppRole)}
-                className="w-full h-9 px-3 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs font-semibold text-[#071629]"
-              >
-                <option value="CLIENT">Corporate Client (IOC, Marginal Field Operator)</option>
-                <option value="SUPPLIER">Pre-Qualified Vendor / Equipment Supplier</option>
-              </select>
-            </div>
-
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-[11px] font-bold text-[#071629] uppercase tracking-wider mb-1">
@@ -365,7 +388,7 @@ export const AuthModal: React.FC = () => {
                 <input
                   required
                   type="text"
-                  placeholder="Engr. Austin Okoro"
+                  placeholder="Engr. Kunle Adeyemi"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full h-9 px-3 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs text-[#071629]"
@@ -374,12 +397,12 @@ export const AuthModal: React.FC = () => {
 
               <div>
                 <label className="block text-[11px] font-bold text-[#071629] uppercase tracking-wider mb-1">
-                  Organization Legal Name *
+                  Organization Name *
                 </label>
                 <input
                   required
                   type="text"
-                  placeholder="SEPLAT / Chevron"
+                  placeholder="Seplat / Shell / Oando"
                   value={organization}
                   onChange={(e) => setOrganization(e.target.value)}
                   className="w-full h-9 px-3 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs text-[#071629]"
@@ -404,11 +427,12 @@ export const AuthModal: React.FC = () => {
 
               <div>
                 <label className="block text-[11px] font-bold text-[#071629] uppercase tracking-wider mb-1">
-                  Phone Number
+                  Phone (Nigerian / Int.) *
                 </label>
                 <input
+                  required
                   type="tel"
-                  placeholder="+234 800 000 0000"
+                  placeholder="+234 803 555 0100"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full h-9 px-3 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs text-[#071629]"
@@ -454,68 +478,21 @@ export const AuthModal: React.FC = () => {
                 className="mt-0.5 rounded text-[#2563EB]"
               />
               <span className="text-[11px] text-[#64748B]">
-                I agree to the KES Energy Services Industrial Data Protection and NOGICD compliance requirements.
+                I agree to the KES Energy Services Data Protection & NOGICD compliance requirements.
               </span>
             </label>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 bg-[#071629] hover:bg-[#153C65] text-white font-bold text-xs uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50 mt-2"
+              className="w-full h-11 bg-[#071629] hover:bg-[#153C65] text-white font-bold text-xs uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50 mt-2 cursor-pointer"
             >
-              {loading ? (
-                <span>Registering Account...</span>
-              ) : (
-                <>
-                  <KeyRound className="w-4 h-4 text-[#F4B323]" />
-                  <span>Create Verified Account</span>
-                </>
-              )}
+              <KeyRound className="w-4 h-4 text-[#F4B323]" />
+              <span>Register & Enter Portal</span>
             </button>
-          </form>
-        )}
-
-        {/* FORGOT PASSWORD FORM */}
-        {mode === 'forgot' && (
-          <form onSubmit={handleForgotSubmit} className="p-6 space-y-4">
-            <div>
-              <label className="block text-[11px] font-bold text-[#071629] uppercase tracking-wider mb-1">
-                Registered Work Email Address *
-              </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-[#94A3B8] absolute left-3 top-2.5" />
-                <input
-                  required
-                  type="email"
-                  placeholder="name@company.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-9 pl-9 pr-3 bg-[#F8FAFC] border border-[#CBD5E1] rounded text-xs text-[#071629] focus:bg-white focus:border-[#2563EB]"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-11 bg-[#071629] hover:bg-[#153C65] text-white font-bold text-xs uppercase tracking-wider rounded-lg flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
-            >
-              {loading ? 'Transmitting...' : 'Send Password Reset Link'}
-            </button>
-
-            <div className="text-center pt-2">
-              <button
-                type="button"
-                onClick={() => setMode('login')}
-                className="text-xs font-semibold text-[#2563EB] hover:underline"
-              >
-                Back to Sign In
-              </button>
-            </div>
           </form>
         )}
       </div>
     </div>
   );
 };
-

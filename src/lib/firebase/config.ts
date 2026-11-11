@@ -1,12 +1,13 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAnalytics, isSupported, Analytics } from 'firebase/analytics';
 
-// Firebase configuration using environment variables with the project credentials as verified defaults
+// Firebase configuration using environment variables
+// Note: Real API keys must be supplied via VITE_FIREBASE_API_KEY environment variable.
 const firebaseConfig = {
   apiKey:
     import.meta.env.VITE_FIREBASE_API_KEY ||
     import.meta.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
-    'AIzaSyCu9BlIW5lbtqgBDQAYOm0aFcx2aW699i8',
+    '',
   authDomain:
     import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ||
     import.meta.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ||
